@@ -1,25 +1,29 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import { BrowserRouter } from "react-router-dom";
+
+import NavBar from "./NavBar";
+import Body from "./Body";
+import Context from "./Context";
+
+import JoblyApi from "./api";
+
+import "./App.css";
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	const [user, setUser] = useState(null);
+	async function login(username, password) {
+		setUser(JoblyApi.authLogin(username, password));
+	}
+	return (
+		<BrowserRouter>
+			<Context.Provider value={{ user, login }}>
+				<div className="App">
+					<NavBar />
+					<Body />
+				</div>
+			</Context.Provider>
+		</BrowserRouter>
+	);
 }
 
 export default App;
