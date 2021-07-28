@@ -2,9 +2,10 @@ import React, { useEffect, useState } from "react";
 import CompanyCard from "./CompanyCard";
 import JoblyApi from "./api";
 
-function CompanyList() {
+function CompanyList({ getDetails }) {
 	const [companies, setCompanies] = useState(null);
 	const [formData, setFormData] = useState({ name: "" });
+
 	useEffect(() => {
 		try {
 			const res = await JoblyApi.companiesGetAll({
@@ -23,6 +24,7 @@ function CompanyList() {
 			[name]: value,
 		}));
 	}
+
 	return (
 		<div>
 			<div>
@@ -37,7 +39,11 @@ function CompanyList() {
 				<button onClick={handleSubmit}>Submit</button>
 			</div>
 			{companies.map((company) => (
-				<CompanyCard company={company} key={company.handle} />
+				<CompanyCard
+					company={company}
+					key={company.handle}
+					getDetails={getDetails}
+				/>
 			))}
 		</div>
 	);

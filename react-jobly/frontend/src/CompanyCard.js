@@ -1,15 +1,7 @@
 import React from "react";
 import { Card, CardBody, CardTitle } from "reactstrap";
-import Company from "../../backend/models/company";
-import JoblyApi from "./api";
 
-function CompanyCard({ company }) {
-	function getDetails() {
-        try{
-            const res = await JoblyApi.companiesGetOne(company.handle);
-        }
-    }
-
+function CompanyCard({ company, getDetails }) {
 	return (
 		<Card onClick={async () => getDetails()}>
 			<CardBody>
