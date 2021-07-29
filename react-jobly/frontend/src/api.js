@@ -63,14 +63,28 @@ class JoblyApi {
 			{ username, password },
 			"post"
 		);
-		return res.token;
+		this.updateToken(res.token);
+		let userRes = await this.userGet(username);
+		return userRes.user;
 	}
 
 	static async authSignup(data) {
+		const { username, password } = data;
 		let res = await this.request(`auth/register`, data, "post");
-		return res.token;
+		this.updateToken(res.token);
+		const userRes = await this.authLogin(username, password);
+		return userRes.user;
 	}
 
+	static authLogout() {
+		sessionStorage.clear();
+		localStorage.clear();
+	}
+
+	static async userGet(username) {
+		let res = await this.request(`user/${username}`);
+		return res.user;
+	}
 	static async userUpdate(data) {
 		let res = await this.request(`user/`, data, "patch");
 		return res.user;
@@ -85,12 +99,20 @@ class JoblyApi {
 		let res = await this.request(`users/${username}`, {}, "delete");
 		return res.deleted;
 	}
+
+	static updateToken(token = null) {
+		if (token) {
+			sessionStorage.setItem("token", token);
+		}
+		this.token = sessionStorage.getItem("token");
+	}
 }
 
 // for now, put token ("testuser" / "password" on class)
 JoblyApi.token =
-	"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZ" +
-	"SI6InRlc3R1c2VyIiwiaXNBZG1pbiI6ZmFsc2UsImlhdCI6MTU5ODE1OTI1OX0." +
-	"FtrMwBQwe6Ue-glIFgz_Nf8XxRT2YecFCiSpYL0fCXc";
+	sessionStorage.getItem("token") |
+	("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZ" +
+		"SI6InRlc3R1c2VyIiwiaXNBZG1pbiI6ZmFsc2UsImlhdCI6MTU5ODE1OTI1OX0." +
+		"FtrMwBQwe6Ue-glIFgz_Nf8XxRT2YecFCiSpYL0fCXc");
 
 export default JoblyApi;

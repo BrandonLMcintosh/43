@@ -1,20 +1,26 @@
-import React, { useEffect, useState } from "react";
+
+import {React, useState, useEffect}  from "react";
 import CompanyCard from "./CompanyCard";
 import JoblyApi from "./api";
+import { Link } from "react-router-dom";
 
-function CompanyList({ getDetails }) {
+function CompanyList() {
 	const [companies, setCompanies] = useState(null);
 	const [formData, setFormData] = useState({ name: "" });
 
 	useEffect(() => {
-		try {
-			const res = await JoblyApi.companiesGetAll({
-				name: formData.name,
-			});
-			setCompanies(res.companies);
-		} catch (err) {
-			console.log(err);
+		async function getCompanies() {
+			try {
+				const res = await JoblyApi.companiesGetAll({
+					name: formData.name,
+				});
+				setCompanies(res.companies);
+			} catch (err) {
+				console.log(err);
+			}
 		}
+
+		getCompanies();
 	}, [formData]);
 
 	function handleChange(evt) {
@@ -36,14 +42,12 @@ function CompanyList({ getDetails }) {
 					placeholder="Enter search term.."
 					onChange={handleChange}
 				/>
-				<button onClick={handleSubmit}>Submit</button>
+				<button>
+					<Link to={`/companies/${formData.name}`}></Link>
+				</button>
 			</div>
 			{companies.map((company) => (
-				<CompanyCard
-					company={company}
-					key={company.handle}
-					getDetails={getDetails}
-				/>
+				<CompanyCard company={company} key={company.handle} />
 			))}
 		</div>
 	);

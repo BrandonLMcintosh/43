@@ -1,27 +1,28 @@
-import React, { useEffect, useState, useContext } from "react";
+import { useEffect, useState } from "react";
 import JoblyApi from "../api";
-import Context from "../Context";
+import useUser from "./useUser";
 
-function useApply(id = null) {
-	const [id, setId] = useState(null);
-	const { user } = useContext(Context);
-
-	async function apply() {
-		if (id) {
-			try {
-				await JoblyApi.userApplyJob(user.username, id);
-				user.applications.push(id);
-			} catch (err) {
-				console.log(err);
-			}
-		}
-	}
+function useApply(initialId = null) {
+	const [id, setId] = useState(initialId);
+	const [user, setUser] = useUser();
 
 	useEffect(() => {
-		await apply();
-	}, [id]);
+		async function apply() {
+			if (id) {
+				try {
+					await JoblyApi.userApplyJob(user.username, id);
+					user.applications.push(id);
+					setUser(user);
+				} catch (err) {
+					console.log(err);
+				}
+			}
+		}
 
-	return [id, setId];
+		apply();
+	}, [id, user, setUser]);
+
+	return setId;
 }
 
 export default useApply;

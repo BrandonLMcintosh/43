@@ -1,36 +1,46 @@
-import { Switch, Route, Redirect, useParams } from "react-router-dom";
-import React from "react";
+import { Switch, Route, Redirect } from "react-router-dom";
+import React, { useContext } from "react";
 
 import Landing from "./Landing";
-import Companies from "./Companies";
-import Jobs from "./Jobs";
-import Login from "./Login";
-import Signup from "./Signup";
-import Profile from "./Profile";
+import JobList from "./JobList";
+import CompanyDetail from "./CompanyDetail";
+import CompanyList from "./CompanyList";
+import Form from "./Form";
+import Context from "./Context";
 
 function Routes() {
+	const { auth } = useContext(Context);
 	return (
 		<Switch>
 			<Route exact path="/">
 				<Landing />
 			</Route>
 			<Route exact path="/companies">
-				<Companies />
+				<CompanyList />
 			</Route>
 			<Route path="/companies/:handle">
-				<Jobs />
+				<CompanyDetail />
 			</Route>
 			<Route exact path="/jobs">
-				<Jobs />
+				<JobList />
 			</Route>
 			<Route exact path="/profile">
-				<Profile />
+				<Form
+					initialFormState={auth.init.update}
+					action={auth.update}
+				/>
 			</Route>
 			<Route exact path="/login">
-				<Login />
+				<Form
+					initialFormState={auth.init.login}
+					action={auth.login}
+				/>
 			</Route>
 			<Route exact path="/signup">
-				<Signup />
+				<Form
+					initialFormState={auth.init.signup}
+					action={auth.signup}
+				/>
 			</Route>
 			<Redirect to="/" />
 		</Switch>

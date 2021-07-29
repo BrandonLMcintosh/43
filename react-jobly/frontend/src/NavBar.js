@@ -1,12 +1,11 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Navbar, NavbarBrand } from "reactstrap";
 
 import NavBarUnauth from "./NavBarUnauth";
 import NavBarAuth from "./NavBarAuth";
-import Context from "./Context";
 
 function NavBar() {
-	const { user } = useContext(Context);
+	const user = localStorage.getItem("user");
 	return (
 		<div>
 			<Navbar>
